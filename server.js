@@ -5,7 +5,7 @@ const cors = require('cors')
 const nodemailer = require('nodemailer')
 var port = process.env.PORT || 3001; //create a port for listening for requests...
 const MongoClient = require('mongodb').MongoClient;
-const password = 'sep51995...' //Enter password here
+const password = '' //Enter password here
 const uri = 'mongodb+srv://stefy:' + password + '@cluster0-xhrbw.mongodb.net/test?retryWrites=true'; //This the uri to the remote MongoDb Cluster
 
 const app = express()
@@ -15,34 +15,27 @@ app.use(express.static(__dirname));
 app.use(cors())
 
 
-/*
+
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'ssy@gmail.com',
-        pass: ''
+        user: 'sstefyboy@gmail.com',
+        pass: 'Sep51995'
     }
 });
 
-var mailOptions = {
-    from: 'sstefyboy@gmail.com',
-    to: 'martin.stefon@gmail.com',
-    subject: 'Sending Email using Node.js',
-    text: 'That was easy!'
-};
 
-transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-        console.log(error);
-    } else {
-        console.log('Email sent: ' + info.response);
-    }
-});
-*/
+
 let studentsArray = new Array()
+let emailHtml = "<div class=\"wrapper\" style = \"text-align: center;\"><h1>Results From Surveys</h1>"
 
 function myFunction(value, index, array) {
-    let emailHtml = ""
+     emailHtml += "<table><tr><th>Email</th><th>Rating</th><th>Favorite Topic</th><th>Questions</th><th>Tell A Friend</th><th>Favorite Social Media</th></tr>"+
+     "<tr><td>"+value.user_email +"</td><td>"+value.rating +"</td><td>"+value.fav_topic +"</td><td>"+value.questions +"</td><td>"+value.tell_option +"</td><td>"+value.social_media +"</td></tr></table></div>"
+
+
+   
+
   }
 
 
@@ -62,6 +55,27 @@ app.get('/send', (req, res) => {
             applicant.find({}).toArray(function (err, result) {
                 if (err) throw err;
                 result.forEach(myFunction)
+                
+
+                
+
+                
+                var mailOptions = {
+                    from: 'sstefyboy@gmail.com',
+                    to: 'sstefyboy@gmail.com',
+                    subject: 'Sending Email using Node.js',
+                    html: emailHtml
+                };
+                
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log('Email sent: ' + info.response);
+                    }
+                });
+                
+                
                 
                 
                 
@@ -83,7 +97,7 @@ app.get('/send', (req, res) => {
         }).catch(err => console.log(err))
 
 
-
+        res.json("Email Succesfully Sent. CAUTION DO NOT SPAM BUTTON OR YOU WILL SPAM YOUR EMAIL.")
         
         
 
